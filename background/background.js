@@ -31,19 +31,22 @@ function initialize() {
 
 // アイコン状態の更新
 function updateIcon(enabled) {
-  const iconPath = enabled 
-    ? { 
-        16: 'icons/icon16.png',
-        48: 'icons/icon48.png',
-        128: 'icons/icon128.png'
-      }
-    : {
-        16: 'icons/icon16_disabled.png',
-        48: 'icons/icon48_disabled.png',
-        128: 'icons/icon128_disabled.png'
-      };
+  // 無効化時も通常のアイコンを使用し、別の方法で無効状態を表現する
+  const iconPath = { 
+    16: 'icons/icon16.png',
+    48: 'icons/icon48.png',
+    128: 'icons/icon128.png'
+  };
   
   chrome.action.setIcon({ path: iconPath });
+  
+  // 無効状態の場合は、アイコンをグレースケールや透明度で表現する
+  if (!enabled) {
+    chrome.action.setBadgeText({ text: 'OFF' });
+    chrome.action.setBadgeBackgroundColor({ color: '#888888' });
+  } else {
+    chrome.action.setBadgeText({ text: '' });
+  }
 }
 
 // Webリクエストフィルタの設定
@@ -171,6 +174,18 @@ function toggleEnabled(enabled) {
   currentSettings.enabled = enabled;
   chrome.storage.sync.set({ enabled: enabled });
   updateIcon(enabled);
+  
+  // 全てのタブのバッジを更新
+  chrome.tabs.query({}, function(tabs) {
+    tabs.forEach(function(tab) {
+      if (enabled) {
+        // 有効化された場合、ブロックカウントを表示
+        updateBadge(tab.id);
+      } else {
+        // 無効化されている場合は、updateIconで設定されるのでここでは何もしない
+      }
+    });
+  });
 }
 
 // サイト固有の設定更新
@@ -207,15 +222,19 @@ function getSiteSettings(url, sendResponse) {
 
 // バッジの更新
 function updateBadge(tabId) {
-  chrome.action.setBadgeText({
-    text: currentSettings.blockedCount.toString(),
-    tabId: tabId
-  });
-  
-  chrome.action.setBadgeBackgroundColor({
-    color: '#E03131',
-    tabId: tabId
-  });
+  // 拡張機能が有効な場合のみブロックカウントを表示
+  if (currentSettings.enabled) {
+    chrome.action.setBadgeText({
+      text: currentSettings.blockedCount.toString(),
+      tabId: tabId
+    });
+    
+    chrome.action.setBadgeBackgroundColor({
+      color: '#E03131',
+      tabId: tabId
+    });
+  }
+  // 無効の場合は、updateIcon関数でバッジが設定される
 }
 
 // エラー処理
