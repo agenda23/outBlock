@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OutBlocker</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>OutBlocker</h1>
+    
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" id="enableToggle">
+        <span class="slider round"></span>
+      </label>
+      <span id="statusText">有効</span>
+    </div>
+    
+    <div class="stats-container">
+      <h2>統計情報</h2>
+      <p>ブロックした広告: <span id="blockedCount">0</span></p>
+    </div>
+    
+    <div class="site-settings">
+      <h2>現在のサイト設定</h2>
+      <div class="current-site">
+        <span id="currentSite">loading...</span>
+        <label class="switch">
+          <input type="checkbox" id="siteToggle">
+          <span class="slider round"></span>
+        </label>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <button id="resetStats">統計リセット</button>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
