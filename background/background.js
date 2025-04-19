@@ -33,14 +33,14 @@ function initialize() {
 function updateIcon(enabled) {
   const iconPath = enabled 
     ? { 
-        16: 'icons/icon16.png',
-        48: 'icons/icon48.png',
-        128: 'icons/icon128.png'
+        16: chrome.runtime.getURL('icons/icon16.png'),
+        48: chrome.runtime.getURL('icons/icon48.png'),
+        128: chrome.runtime.getURL('icons/icon128.png')
       }
     : {
-        16: 'icons/icon16_disabled.png',
-        48: 'icons/icon48_disabled.png',
-        128: 'icons/icon128_disabled.png'
+        16: chrome.runtime.getURL('icons/icon16_disabled.png'),
+        48: chrome.runtime.getURL('icons/icon48_disabled.png'),
+        128: chrome.runtime.getURL('icons/icon128_disabled.png')
       };
   
   chrome.action.setIcon({ path: iconPath });
